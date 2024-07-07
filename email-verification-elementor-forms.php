@@ -2,10 +2,9 @@
 /*
 Plugin Name: Email Verification for Elementor Forms
 Description: Adds a custom email verification field to Elementor forms.
-Version: 1.0
-Author: Your Name
+Version: 0.1
+Author: Robin | Westsite
 Text Domain: email-verification-elementor-forms
-Domain Path: /languages
 */
 
 namespace EVEF;
@@ -22,7 +21,7 @@ final class Plugin
     private function __construct()
     {
         $this->define_constants();
-        $this->includes();
+        $this->autoload_classes();
         $this->init_hooks();
     }
 
@@ -36,7 +35,7 @@ final class Plugin
 
     private function define_constants()
     {
-        define('EVEF_VERSION', '1.0');
+        define('EVEF_VERSION', '0.1');
         define('EVEF_PLUGIN_DIR', plugin_dir_path(__FILE__));
         define('EVEF_PLUGIN_URL', plugin_dir_url(__FILE__));
     }
@@ -47,35 +46,40 @@ final class Plugin
             "ajax-handler",
             "code-generator",
             "email-handler",
-            "email-verification-field"
+            "email-verification-field",
+            "constants"
         ];
         foreach ($require as $file) {
             require_once EVEF_PLUGIN_DIR . 'includes/' . $file . '.php';
         }
     }
 
-    public function autoload_classes($class_name)
+    public function autoload_classes()
     {
-        if (false !== strpos($class_name, __NAMESPACE__ . '\\')) {
-            $classes_dir = EVEF_PLUGIN_DIR . 'includes/';
-            $class_file = str_replace([__NAMESPACE__ . '\\', '\\'], ['', DIRECTORY_SEPARATOR], $class_name) . '.php';
-            $class_file = strtolower($class_file); // Converts the filename to lowercase
+        spl_autoload_register(function ($class_name) {
+            if (0 === strpos($class_name, __NAMESPACE__ . '\\')) {
+                $classes_dir = EVEF_PLUGIN_DIR . 'includes/';
+                $class_file = str_replace([__NAMESPACE__ . '\\', '\\', "_"], ['', DIRECTORY_SEPARATOR, "-"], $class_name) . '.php';
+                $class_file = strtolower($class_file); // Converts the filename to lowercase
 
-            if (file_exists($classes_dir . $class_file)) {
-                require $classes_dir . $class_file;
+                // Exclude field-templates directory
+                if (strpos($class_file, 'field-templates') === false && file_exists($classes_dir . $class_file)) {
+                    require $classes_dir . $class_file;
+                }
             }
-        }
+        });
     }
 
     private function init_hooks()
     {
         add_action('elementor_pro/forms/fields/register', [__NAMESPACE__ . '\Email_Verification_Field', 'register_field']);
-        add_action('wp_ajax_evef_send_verification_code', [__NAMESPACE__ . '\Ajax_Handler', 'send_verification_code']);
-        add_action('wp_ajax_nopriv_evef_send_verification_code', [__NAMESPACE__ . '\Ajax_Handler', 'send_verification_code']);
+        add_action('wp_ajax_' . Constants::AJAX_ACTION_SEND_VERIFICATION_CODE, [__NAMESPACE__ . '\Ajax_Handler', 'send_verification_code']);
+        add_action('wp_ajax_nopriv_' . Constants::AJAX_ACTION_SEND_VERIFICATION_CODE, [__NAMESPACE__ . '\Ajax_Handler', 'send_verification_code']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
-        add_action('elementor-pro/forms/pre_render', function($instance, $form){
-            wp_enqueue_style( 'elementor-icons' );
+        add_action('elementor-pro/forms/pre_render', function ($instance, $form) {
+            wp_enqueue_style('elementor-icons');
         }, 10, 2);
+        add_action('init', [$this, 'load_textdomain']);
     }
 
     public function register_assets()
@@ -84,17 +88,23 @@ final class Plugin
         wp_register_script('evef-scripts', EVEF_PLUGIN_URL . 'assets/dist/js/main.js', ['jquery'], EVEF_VERSION, true);
     }
 
+    public function load_textdomain()
+    {
+        load_plugin_textdomain("email-verification-elementor-forms", false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
+    }
+
 }
 
 // Initialize the plugin only if Elementor Pro is activated
-function evef_maybe_initialize_plugin() {
+function evef_maybe_initialize_plugin()
+{
     if (did_action('elementor/loaded')) {
         if (class_exists('ElementorPro\Plugin')) {
             Plugin::instance();
         } else {
-            add_action('admin_notices', function() {
+            add_action('admin_notices', function () {
                 echo '<div class="notice notice-warning is-dismissible">
-                    <p>' . __('Email Verification for Elementor Forms requires Elementor Pro to be installed and activated.', 'email-verification-elementor-forms') . '</p>
+                    <p>' . esc_html__('Email Verification for Elementor Forms requires Elementor Pro to be installed and activated.', 'email-verification-elementor-forms') . '</p>
                 </div>';
             });
         }

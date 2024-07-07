@@ -16,7 +16,9 @@ class Code_Generator
         $min = pow(10, $digits - 1);
         $max = pow(10, $digits) - 1;
 
-        return rand($min, $max);
+        $code = apply_filters("evef/generated_code", rand($min, $max), $digits);
+
+        return $code;
     }
 }
 

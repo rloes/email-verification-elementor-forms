@@ -1,42 +1,42 @@
-.elementor-field-type-verification:not(.code-sent) {
+.elementor-field-type-evef-verification:not(.code-sent) {
   display: none;
 }
 
-.elementor-field-type-verification .send-code-again {
+.elementor-field-type-evef-verification .send-code-again {
   margin-left: auto;
   margin-top: 10px;
 }
 
-.elementor-field-type-verification .send-code-again .normal {
+.elementor-field-type-evef-verification .send-code-again .normal {
   color: #007bff;
   text-decoration: underline;
   cursor: pointer;
 }
 
-.elementor-field-type-verification .send-code-again .normal:hover {
+.elementor-field-type-evef-verification .send-code-again .normal:hover {
   color: #0056b3;
   text-decoration: none;
 }
 
-.elementor-field-type-verification .send-code-again .success {
+.elementor-field-type-evef-verification .send-code-again .success {
   color: #000;
   text-decoration: none;
   cursor: auto;
 }
 
-.elementor-field-type-verification .send-code-again .error {
+.elementor-field-type-evef-verification .send-code-again .error {
   color: darkred;
   text-decoration: none;
   cursor: auto;
 }
 
-.elementor-field-type-verification .send-code-again:focus {
+.elementor-field-type-evef-verification .send-code-again:focus {
   outline: none;
   text-decoration: none;
   color: #0056b3;
 }
 
-.elementor-field-type-verification .send-code-again.loading .loader {
+.elementor-field-type-evef-verification .send-code-again.loading .loader {
   width: 10px;
   border-radius: 50%;
   animation: loading 1s infinite linear alternate;
@@ -46,7 +46,7 @@
   margin-right: 21px;
 }
 
-.elementor-field-type-verification .send-code-again:not(.loading) .loader {
+.elementor-field-type-evef-verification .send-code-again:not(.loading) .loader {
   display: none;
 }
 

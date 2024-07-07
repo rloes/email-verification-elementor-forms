@@ -20,14 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.toggleFormFieldRequirement(this.emailField,null,true );
                 if (this.sendAgainButton) {
                     this.resetSendAgainButtonState(this.sendAgainButton);
-                    const codeLength = jQuery(this.field).attr("maxlength");
                     this.sendAgainButton.addEventListener('click', (e) => {
-                        this.handleSendAgainClick(e, codeLength);
+                        this.handleSendAgainClick(e);
                     });
                 }
 
                 jQuery(document).ajaxComplete((event, xhr, settings) => {
-                    console.log(event, xhr, settings)
                     this.handleAjaxComplete(settings, xhr);
                 });
             }
@@ -70,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        handleSendAgainClick(e, codeLength) {
+        handleSendAgainClick(e) {
             e.preventDefault();
             e.stopPropagation();
             const email = this.emailField.val();
@@ -88,9 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     action: 'evef_send_verification_code',
                     email: email,
                     _ajax_nonce: this.nonce,
-                    code_length: codeLength,
                     widget_id: this.formId,
-                    post_id: this.form.find('[name="post_id"]').val()
+                    post_id: this.form.find('[name="post_id"]').val(),
+                    field_id: this.getFieldIdFromFieldElement(this.field)
                 }
             }).done((data, textStatus, jqXHR) => {
                 this.updateSendAgainButtonState('success');
@@ -131,6 +129,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const verificationFields = document.querySelectorAll('form .elementor-verification-field');
-    verificationFields.forEach(field => new VerificationFieldHandler(field));
+    const initializedFields = new Set();
+
+    function initializeVerificationHandlers() {
+        const verificationFields = document.querySelectorAll('form .elementor-evef-verification-field');
+        verificationFields.forEach(field => {
+            if (!initializedFields.has(field)) {
+                new VerificationFieldHandler(field);
+                initializedFields.add(field);
+            }
+        });
+    }
+
+    initializeVerificationHandlers();
+    // Assuming you have some method to detect popup open, like an event or callback
+    jQuery(document).on('elementor/popup/show', (event, id, instance) => {
+        initializeVerificationHandlers();
+    });
 });

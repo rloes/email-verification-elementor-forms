@@ -2,6 +2,8 @@
 
 namespace EVEF;
 
+use function cli\err;
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -12,9 +14,8 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
     public function __construct()
     {
         parent::__construct();
-        add_filter("elementor_pro/forms/render/item/".Constants::FIELD_TYPE, [$this, "add_design_class_to_field_group"], 10, 3);
+        add_filter("elementor_pro/forms/render/item/" . Constants::FIELD_TYPE, [$this, "add_design_class_to_field_group"], 10, 3);
         add_action('wp_enqueue_scripts', [$this, 'localize_scripts']);
-
     }
 
     public function get_type()
@@ -27,29 +28,31 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
         return __('Verification Field', 'email-verification-elementor-forms');
     }
 
-    public $depended_scripts = [ 'evef-scripts' ];
+    public $depended_scripts = [Constants::SCRIPTS_HANDLE];
 
-    public $depended_styles = [ 'evef-styles' ];
+    public $depended_styles = [Constants::STYLES_HANDLE];
 
     public function render($item, $item_index, $form)
     {
-        $email_field_id = $item['verification_email_field'];
-        $design = isset($item['verification_design']) ? $item['verification_design'] : 'classic';
+        $email_field_id = $item[Constants::EMAIL_FIELD];
+        $design = $item[Constants::VERIFICATION_DESIGN] ?? 'classic';
         $code_length = isset($item[Constants::CODE_LENGTH]) ? (int)$item[Constants::CODE_LENGTH] : 6;
 
         $form->add_render_attribute(
             'input' . $item_index,
             [
-                'type' => 'text',
                 'maxlength' => $code_length,
                 'pattern' => '\d{' . $code_length . '}',
                 'placeholder' => sprintf(esc_attr__('Enter %s-digit code', 'email-verification-elementor-forms'), $code_length),
-                'class' => 'elementor-verification-field elementor-field-textual',
+                'class' => 'elementor-'. $this->get_type() .'-field elementor-field-textual',
                 'data-email-field' => esc_attr($email_field_id),
             ]
         );
+        $form->add_render_attribute(
+            'input' . $item_index, "type", 'text', true
+        );
 
-        $template_file = __DIR__ . "/field-templates/{$design}.php";
+        $template_file = Constants::TEMPLATE_DIR . "{$design}.php";
 
         if (file_exists($template_file)) {
             /**
@@ -59,31 +62,34 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
              */
             include $template_file;
         } else {
-            echo "<p>" . __('Template not found.', 'email-verification-elementor-forms') . "</p>";
+            echo "<p>" . esc_html__('Template not found.', 'email-verification-elementor-forms') . "</p>";
         }
     }
-
 
     public function validation($field, $record, $ajax_handler)
     {
         $code_entered = $field['value'];
-        $email_field_id = $this->get_setting_for_field_from_record($record, $field, "verification_email_field");
+        $email_field_id = $this->get_setting_for_field_from_record($record, $field, Constants::EMAIL_FIELD);
         $email_field = $record->get_field(["id" => $email_field_id])[$email_field_id];
         $email = $email_field['value'];
 
         if (empty($code_entered)) {
-            $subject = $this->get_setting_for_field_from_record($record, $field, "verification_email_subject");
-            $body = $this->get_setting_for_field_from_record($record, $field, "verification_email_body");
+            $email_from = $this->get_setting_for_field_from_record($record, $field, Constants::EMAIL_FROM);
+            $email_from_name = $this->get_setting_for_field_from_record($record, $field, Constants::EMAIL_FROM_NAME);
+            $email_to_bcc = $this->get_setting_for_field_from_record($record, $field, Constants::EMAIL_TO_BCC);
+            $subject = $this->get_setting_for_field_from_record($record, $field, Constants::EMAIL_SUBJECT);
+            $body = $this->get_setting_for_field_from_record($record, $field, Constants::EMAIL_BODY);
             $code_length = $this->get_setting_for_field_from_record($record, $field, Constants::CODE_LENGTH);
+            error_log($code_length);
             $code = Code_Generator::generate_code($code_length);
             set_transient('evef_verification_code_' . $email, $code, 15 * MINUTE_IN_SECONDS);
 
-            $mail_sent = Email_Handler::send_verification_email($email, $code, $subject, $body);
+            $mail_sent = Email_Handler::send_verification_email($email, $code, $email_from, $email_from_name, $email_to_bcc, $subject, $body);
             if ($mail_sent) {
-                $ajax_handler->add_error($field['id'], __('We have sent a verification code to your email address. Please enter it here and submit the form again.', 'email-verification-elementor-forms'));
+                $ajax_handler->add_error($field['id'], esc_html__('We have sent a verification code to your email address. Please enter it here and submit the form again.', 'email-verification-elementor-forms'));
                 $ajax_handler->add_response_data($field['id'], [
                     "code_sent" => true,
-                    "message" => __('We have sent a verification code to your email address. Please enter it here and submit the form again.', 'email-verification-elementor-forms')
+                    "message" => esc_html__('We have sent a verification code to your email address. Please enter it here and submit the form again.', 'email-verification-elementor-forms')
                 ]);
             } else {
                 $ajax_handler->add_error_message($ajax_handler->get_default_message($ajax_handler::SERVER_ERROR, $ajax_handler->get_current_form()['settings']));
@@ -91,17 +97,15 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
         } else {
             $code_sent = get_transient('evef_verification_code_' . $email);
             if ($code_entered !== $code_sent) {
-                $ajax_handler->add_error($field['id'], __('Invalid verification code.', 'email-verification-elementor-forms'));
+                $ajax_handler->add_error($field['id'], esc_html__('Invalid verification code.', 'email-verification-elementor-forms'));
             }
         }
     }
 
-
     public function get_setting_for_field_from_record($record, $field, $setting)
     {
-        $fields = $record->get("fields");
-        $verification_field_index = array_search($field["id"], array_keys($fields));
         $form_field_settings = $record->get("form_settings")["form_fields"];
+        $verification_field_index = array_search($field["id"], array_column($form_field_settings, "custom_id"));
         if (isset($form_field_settings[$verification_field_index][$setting])) {
             return $form_field_settings[$verification_field_index][$setting];
         }
@@ -115,9 +119,7 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
 
     public function update_controls($widget)
     {
-
         $elementor = \ElementorPro\Plugin::elementor();
-
         $control_data = $elementor->controls_manager->get_control_from_stack($widget->get_unique_name(), 'form_fields');
 
         if (is_wp_error($control_data)) {
@@ -126,8 +128,8 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
 
         $fields = $control_data['fields'];
         $field_controls = [
-            'verification_email_field' => [
-                'name' => 'verification_email_field',
+            Constants::EMAIL_FIELD => [
+                'name' => Constants::EMAIL_FIELD,
                 'label' => esc_html__('E-Mail Field', 'textdomain'),
                 'type' => \Elementor\Controls_Manager::TEXT,
                 "default" => "email",
@@ -139,8 +141,8 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
                 'tabs_wrapper' => 'form_fields_tabs',
                 'ai' => false,
             ],
-            'verification_design' => [
-                'name' => 'verification_design',
+            Constants::VERIFICATION_DESIGN => [
+                'name' => Constants::VERIFICATION_DESIGN,
                 'label' => esc_html__('Verification Design', 'email-verification-elementor-forms'),
                 'type' => \Elementor\Controls_Manager::SELECT,
                 'options' => [
@@ -169,9 +171,70 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
                 'tab' => 'content',
                 'inner_tab' => 'form_fields_content_tab',
                 'tabs_wrapper' => 'form_fields_tabs',
+                'dynamic' => [
+                    'active' => true,
+                ],
             ],
-            'verification_email_subject' => [
-                'name' => 'verification_email_subject',
+            Constants::EMAIL_FROM => [
+                'name' => Constants::EMAIL_FROM,
+                'label' => esc_html__('From Email', 'elementor-pro'),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => 'noreply@' . \ElementorPro\Core\Utils::get_site_domain(),
+                'ai' => [
+                    'active' => false,
+                ],
+                'condition' => [
+                    'field_type' => $this->get_type(),
+                ],
+                'render_type' => 'none',
+                'dynamic' => [
+                    'active' => true,
+                ],
+                'tab' => 'content',
+                'inner_tab' => 'form_fields_content_tab',
+                'tabs_wrapper' => 'form_fields_tabs',
+            ],
+            Constants::EMAIL_FROM_NAME => [
+                'name' => Constants::EMAIL_FROM_NAME,
+                'label' => esc_html__('From Name', 'elementor-pro'),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => get_bloginfo('name'),
+                'ai' => [
+                    'active' => false,
+                ],
+                'condition' => [
+                    'field_type' => $this->get_type(),
+                ],
+                'render_type' => 'none',
+                'dynamic' => [
+                    'active' => true,
+                ],
+                'tab' => 'content',
+                'inner_tab' => 'form_fields_content_tab',
+                'tabs_wrapper' => 'form_fields_tabs',
+            ],
+            Constants::EMAIL_TO_BCC => [
+                'name' => Constants::EMAIL_TO_BCC,
+                'label' => esc_html__('Bcc', 'elementor-pro'),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'default' => '',
+                'ai' => [
+                    'active' => false,
+                ],
+                'condition' => [
+                    'field_type' => $this->get_type(),
+                ],
+                'title' => esc_html__('Separate emails with commas', 'elementor-pro'),
+                'render_type' => 'none',
+                'dynamic' => [
+                    'active' => true,
+                ],
+                'tab' => 'content',
+                'inner_tab' => 'form_fields_content_tab',
+                'tabs_wrapper' => 'form_fields_tabs',
+            ],
+            Constants::EMAIL_SUBJECT => [
+                'name' => Constants::EMAIL_SUBJECT,
                 'label' => esc_html__('Verification Email Subject', 'email-verification-elementor-forms'),
                 'label_block' => true,
                 'description' => esc_html__('You can use {{code}}, it will be replaced with the verification code.', 'email-verification-elementor-forms'),
@@ -180,12 +243,18 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
                 'condition' => [
                     'field_type' => $this->get_type(),
                 ],
+                'ai' => [
+                    'active' => false,
+                ],
                 'tab' => 'content',
                 'inner_tab' => 'form_fields_content_tab',
                 'tabs_wrapper' => 'form_fields_tabs',
+                'dynamic' => [
+                    'active' => true,
+                ],
             ],
-            'verification_email_body' => [
-                'name' => 'verification_email_body',
+            Constants::EMAIL_BODY => [
+                'name' => Constants::EMAIL_BODY,
                 'label' => esc_html__('Verification Email Body', 'email-verification-elementor-forms'),
                 'description' => esc_html__('You can use {{code}}, it will be replaced with the verification code.', 'email-verification-elementor-forms'),
                 'type' => \Elementor\Controls_Manager::TEXTAREA,
@@ -193,9 +262,15 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
                 'condition' => [
                     'field_type' => $this->get_type(),
                 ],
+                'ai' => [
+                    'active' => false,
+                ],
                 'tab' => 'content',
                 'inner_tab' => 'form_fields_content_tab',
                 'tabs_wrapper' => 'form_fields_tabs',
+                'dynamic' => [
+                    'active' => true,
+                ],
             ],
         ];
 
@@ -206,19 +281,18 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
                     'name' => 'field_type',
                     'operator' => '!in',
                     'value' => [
-                        'verification',
+                        Constants::FIELD_TYPE,
                     ],
                 ];
             }
         }
 
         $widget->update_control('form_fields', $control_data);
-
     }
 
     public function add_design_class_to_field_group($item, $item_index, $form)
     {
-        $design = $item["verification_design"];
+        $design = $item[Constants::VERIFICATION_DESIGN];
         $form->add_render_attribute(
             'field-group' . $item_index, [
             "class" => "verification-field-{$design}"
@@ -230,9 +304,9 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
     public function localize_scripts()
     {
         // Localize the script with new data
-        wp_localize_script('evef-scripts', 'verificationFieldHandlerVars', array(
+        wp_localize_script(Constants::SCRIPTS_HANDLE, 'verificationFieldHandlerVars', array(
             'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('evef_send_verification_code')
+            'nonce' => wp_create_nonce(Constants::AJAX_ACTION_SEND_VERIFICATION_CODE)
         ));
     }
 }
