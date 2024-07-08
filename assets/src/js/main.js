@@ -142,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initializeVerificationHandlers();
-    // Assuming you have some method to detect popup open, like an event or callback
     jQuery(document).on('elementor/popup/show', (event, id, instance) => {
         initializeVerificationHandlers();
     });
