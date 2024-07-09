@@ -1,63 +1,79 @@
-.elementor-field-type-evef-verification:not(.code-sent) {
-  display: none;
-}
+.elementor-field-type-evef-verification {
+  --evef-send-code-again-color-link: #007bff;
+  --evef-send-code-again-color-link-hover: #0056b3;
+  --evef-send-code-again-color: #000;
+  --evef-send-code-again-color-error: #ff0000;
+  --evef-send-code-again-loader-color-primary: #000;
+  --evef-send-code-again-loader-color-secondary: #0002;
 
-.elementor-field-type-evef-verification .send-code-again {
-  margin-left: auto;
-  margin-top: 10px;
-}
+  &:not(.code-sent) {
+    display: none;
+  }
 
-.elementor-field-type-evef-verification .send-code-again .normal {
-  color: #007bff;
-  text-decoration: underline;
-  cursor: pointer;
-}
+  .send-code-again {
+    margin-left: auto;
+    margin-top: 10px;
 
-.elementor-field-type-evef-verification .send-code-again:hover .normal {
-  color: #0056b3;
-  text-decoration: none;
-}
+    .normal {
+      color: var(--evef-send-code-again-color-link);
+      text-decoration: underline;
+      cursor: pointer;
 
-.elementor-field-type-evef-verification .send-code-again .success, .elementor-field-type-evef-verification .send-code-again .error {
-  text-decoration: none;
-  cursor: auto;
-}
+      &:hover {
+        color: var(--evef-send-code-again-color-link-hover);
+        text-decoration: none;
+      }
+    }
 
-.elementor-field-type-evef-verification .send-code-again:focus .normal{
-  outline: none;
-  text-decoration: none;
-  color: #0056b3;
-}
+    .success {
+      color: var(--evef-send-code-again-color);
+      text-decoration: none;
+      cursor: auto;
+    }
 
-.elementor-field-type-evef-verification .send-code-again.loading .loader {
-  width: 10px;
-  border-radius: 50%;
-  animation: loading 1s infinite linear alternate;
-  height: 10px;
-  display: inline-block;
-  margin-left: 30px;
-  margin-right: 21px;
-}
+    .error {
+      color: var(--evef-send-code-again-color-error);
+      text-decoration: none;
+      cursor: auto;
+    }
 
-.elementor-field-type-evef-verification .send-code-again:not(.loading) .loader {
-  display: none;
+    &:focus {
+      outline: none;
+      text-decoration: none;
+      color: var(--evef-send-code-again-color-link-hover);
+    }
+
+    &.loading .loader {
+      width: 10px;
+      border-radius: 50%;
+      animation: loading 1s infinite linear alternate;
+      height: 10px;
+      display: inline-block;
+      margin-left: 30px;
+      margin-right: 21px;
+    }
+
+    &:not(.loading) .loader {
+      display: none;
+    }
+  }
 }
 
 @keyframes loading {
   0% {
-    box-shadow: 20px 0 #000, -20px 0 #0002;
-    background: #000
+    box-shadow: 20px 0 var(--evef-send-code-again-loader-color-primary), -20px 0 var(--evef-send-code-again-loader-color-secondary);
+    background: var(--evef-send-code-again-loader-color-primary);
   }
   33% {
-    box-shadow: 20px 0 #000, -20px 0 #0002;
-    background: #0002
+    box-shadow: 20px 0 var(--evef-send-code-again-loader-color-primary), -20px 0 var(--evef-send-code-again-loader-color-secondary);
+    background: var(--evef-send-code-again-loader-color-secondary);
   }
   66% {
-    box-shadow: 20px 0 #0002, -20px 0 #000;
-    background: #0002
+    box-shadow: 20px 0 var(--evef-send-code-again-loader-color-secondary), -20px 0 var(--evef-send-code-again-loader-color-primary);
+    background: var(--evef-send-code-again-loader-color-secondary);
   }
   100% {
-    box-shadow: 20px 0 #0002, -20px 0 #000;
-    background: #000
+    box-shadow: 20px 0 var(--evef-send-code-again-loader-color-secondary), -20px 0 var(--evef-send-code-again-loader-color-primary);
+    background: var(--evef-send-code-again-loader-color-primary);
   }
 }
