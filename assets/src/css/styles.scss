@@ -13,24 +13,17 @@
   cursor: pointer;
 }
 
-.elementor-field-type-evef-verification .send-code-again .normal:hover {
+.elementor-field-type-evef-verification .send-code-again:hover .normal {
   color: #0056b3;
   text-decoration: none;
 }
 
-.elementor-field-type-evef-verification .send-code-again .success {
-  color: #000;
+.elementor-field-type-evef-verification .send-code-again .success, .elementor-field-type-evef-verification .send-code-again .error {
   text-decoration: none;
   cursor: auto;
 }
 
-.elementor-field-type-evef-verification .send-code-again .error {
-  color: darkred;
-  text-decoration: none;
-  cursor: auto;
-}
-
-.elementor-field-type-evef-verification .send-code-again:focus {
+.elementor-field-type-evef-verification .send-code-again:focus .normal{
   outline: none;
   text-decoration: none;
   color: #0056b3;
