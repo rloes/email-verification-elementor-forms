@@ -13,7 +13,7 @@ $loader_html = apply_filters('evef/classic/loader_html', '<div class="loader"></
 <input <?= $form->get_render_attribute_string('input' . $item_index) ?> >
 <span role="button" class="send-code-again" tabindex="0">
     <span class="normal"><?= $normal_text ?></span>
-    <span class="success"><?= $success_text ?></span>
-    <span class="error"><?= $error_text ?></span>
+    <span class="success elementor-message-success"><?= $success_text ?></span>
+    <span class="error elementor-message-danger"><?= $error_text ?></span>
     <?= $loader_html ?>
 </span>
