@@ -25,7 +25,7 @@ class Ajax_Handler
 
         // Retrieve page ID and widget ID from AJAX request
         $post_id = intval($_POST['post_id']);
-        $widget_id = sanitize_text_field($_POST['widget_id']);
+        $widget_id = sanitize_key($_POST['widget_id']);
         $field_id = sanitize_key($_POST["field_id"]);
 
         // Get widget settings
@@ -50,7 +50,7 @@ class Ajax_Handler
         $code_length = intval($code_length);
         $code_length = $code_length > 0 ? $code_length : 6;
         $code = Code_Generator::generate_code($code_length);
-        set_transient('evef_verification_code_' . $email, $code, 15 * MINUTE_IN_SECONDS);
+        set_transient(Constants::VERIFICATION_CODE_TRANSIENT_PREFIX . $email, $code, 15 * MINUTE_IN_SECONDS);
 
 
         Email_Handler::send_verification_email($email, $code,$email_from, $email_from_name, $email_to_bcc, $subject, $body);

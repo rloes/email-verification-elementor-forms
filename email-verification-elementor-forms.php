@@ -84,8 +84,8 @@ final class Plugin
 
     public function register_assets()
     {
-        wp_register_style('evef-styles', EVEF_PLUGIN_URL . 'assets/dist/css/styles.css', [], EVEF_VERSION);
-        wp_register_script('evef-scripts', EVEF_PLUGIN_URL . 'assets/dist/js/main.js', ['jquery'], EVEF_VERSION, true);
+        wp_register_style('evef-styles', EVEF_PLUGIN_URL . 'assets/dist/css/styles.min.css', [], EVEF_VERSION);
+        wp_register_script('evef-scripts', EVEF_PLUGIN_URL . 'assets/dist/js/frontend.min.js', ['jquery'], EVEF_VERSION, true);
     }
 
     public function load_textdomain()

@@ -6,13 +6,15 @@
   --evef-send-code-again-loader-color-primary: #000;
   --evef-send-code-again-loader-color-secondary: #0002;
 
-  &:not(.code-sent) {
+  body:not(.elementor-editor-active) &:not(.code-sent) {
     display: none;
   }
 
   .send-code-again {
     margin-left: auto;
     margin-top: 10px;
+    width: 100%;
+    text-align: right;
 
     .normal {
       color: var(--evef-send-code-again-color-link);
@@ -43,7 +45,7 @@
       color: var(--evef-send-code-again-color-link-hover);
     }
 
-    &.loading .loader {
+    &.loading .evef-loader {
       width: 10px;
       border-radius: 50%;
       animation: loading 1s infinite linear alternate;
@@ -53,7 +55,7 @@
       margin-right: 21px;
     }
 
-    &:not(.loading) .loader {
+    &:not(.loading) .evef-loader {
       display: none;
     }
   }

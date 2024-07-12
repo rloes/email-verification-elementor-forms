@@ -2,6 +2,8 @@ const gulp = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
 const babel = require('gulp-babel');
 const rename = require('gulp-rename');
+const uglify = require('gulp-uglify');
+const cleanCSS = require('gulp-clean-css');
 
 const paths = {
     styles: {
@@ -14,19 +16,23 @@ const paths = {
     }
 };
 
-// Compile SCSS into CSS
+// Compile SCSS into CSS and minify
 gulp.task('styles', () => {
     return gulp.src(paths.styles.src)
         .pipe(sass().on('error', sass.logError))
+        .pipe(cleanCSS())
+        .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest(paths.styles.dest));
 });
 
-// Compile ES6+ into ES5
+// Compile ES6+ into ES5 and minify
 gulp.task('scripts', () => {
     return gulp.src(paths.scripts.src)
         .pipe(babel({
             presets: ['@babel/env']
         }))
+        .pipe(uglify())
+        .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest(paths.scripts.dest));
 });
 
