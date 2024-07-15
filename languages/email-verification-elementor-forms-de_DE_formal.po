@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Email Verification for Elementor Forms\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-07 11:16+0000\n"
-"PO-Revision-Date: 2024-07-11 23:30+0000\n"
+"PO-Revision-Date: 2024-07-15 15:09+0000\n"
 "Last-Translator: \n"
 "Language-Team: Deutsch (Sie)\n"
 "Language: de_DE_formal\n"
@@ -15,13 +15,15 @@ msgstr ""
 "X-Loco-Version: 2.6.10; wp-6.5.5"
 
 #. Description of the plugin
-#: C:\Users\robin\IdeaProjects\email-verification-elementor-forms\email-verification-elementor-forms.php
-msgid "Adds a custom email verification field to Elementor forms."
+msgid ""
+"Add email verification into your Elementor forms. Users verify their email "
+"via a code, ensuring only valid form submissions and reducing spam."
 msgstr ""
-"Fügt ein benutzerdefiniertes E-Mail-Verifizierungsfeld zu Elementor-"
-"Formularen hinzu."
+"Fügen Sie eine E-Mail-Verifizierung in Ihre Elementor-Formulare ein. "
+"Benutzer verifizieren ihre E-Mail über einen Code, um sicherzustellen, dass "
+"nur gültige Formulare eingereicht werden, und um Spam zu reduzieren."
 
-#: includes/email-verification-field.php:273
+#: includes/email-verification-field.php:262
 msgid ""
 "After submitting the form, a verification code will be emailed, and this "
 "message will appear."
@@ -29,22 +31,22 @@ msgstr ""
 "Nach dem Absenden des Formulars wird ein Verifizierungscode per E-Mail "
 "versendet, und diese Nachricht wird angezeigt."
 
-#: includes/email-verification-field.php:430
+#: includes/email-verification-field.php:434
 #: includes/field-templates/classic.php:8
 msgid "An error occured while sending the mail"
 msgstr "Beim Senden der E-Mail ist ein Fehler aufgetreten"
 
-#: includes/email-verification-field.php:236
+#: includes/email-verification-field.php:225
 msgid "Classic"
 msgstr "Klassisch"
 
-#: includes/email-verification-field.php:217
+#: includes/email-verification-field.php:206
 msgid "E-Mail Field"
 msgstr "E-Mail Feld"
 
 #: includes/email-verification-field.php:54
-#: includes/email-verification-field.php:57 assets/dist/js/editor.js:18
-#: assets/src/js/editor.js:8
+#: includes/email-verification-field.php:57 assets/src/js/editor.js
+#: assets/dist/js/editor.min.js
 msgid "E-Mail field could not be found"
 msgstr "E-Mail Feld konnte nicht gefunden werden"
 
@@ -54,12 +56,11 @@ msgstr ""
 "Die E-Mail Verifizierung ist nicht korrekt eingestellt. Bitte kontaktieren "
 "Sie einen Administrator."
 
-#. Plugin Name of the plugin
-#: C:\Users\robin\IdeaProjects\email-verification-elementor-forms\email-verification-elementor-forms.php
+#. Name of the plugin
 msgid "Email Verification for Elementor Forms"
 msgstr "E-Mail-Verifizierung für Elementor-Formulare"
 
-#: email-verification-elementor-forms.php:107
+#: email-verification-elementor-forms.php:98
 msgid ""
 "Email Verification for Elementor Forms requires Elementor Pro to be "
 "installed and activated."
@@ -67,43 +68,45 @@ msgstr ""
 "E-Mail-Verifizierung für Elementor-Formulare erfordert, dass Elementor Pro "
 "installiert und aktiviert ist."
 
-#: includes/email-verification-field.php:429
+#: includes/email-verification-field.php:433
 msgid "Email was sent again"
 msgstr "E-Mail wurde erneut gesendet"
 
 #: includes/field-templates/classic.php:7
+#, php-format
 msgid "Email was sent again, check spam or try again in %s seconds."
 msgstr ""
 "Die E-Mail wurde erneut gesendet, überprüfen Sie den Spamordner oder "
 "versuchen Sie es in %s Sekunden erneut."
 
 #: includes/email-verification-field.php:70
-msgid "Enter %s-digit code"
-msgstr "%s-stelligen Code eingeben"
+#, php-format
+#| msgid "Enter %s-digit code"
+msgid "Enter your %s-digit code"
+msgstr "Bitte Sie Ihren %s-stelligen Code ein"
 
 #: includes/email-verification-field.php:116
 msgid "Invalid verification code."
-msgstr "Ungültiger Verifizierungscode."
+msgstr "Der Verifizierungscode ist ungültig."
 
-#: includes/code-generator.php:13
+#: includes/code-generator.php:15
 msgid "Number of digits must be at least 1."
 msgstr "Die Anzahl der Ziffern muss mindestens 1 betragen."
 
 #. Author of the plugin
-#: C:\Users\robin\IdeaProjects\email-verification-elementor-forms\email-verification-elementor-forms.php
 msgid "Robin | Westsite"
 msgstr "Robin | Westsite"
 
-#: includes/email-verification-field.php:221
+#: includes/email-verification-field.php:210
 msgid "Select an email field"
 msgstr "Wählen Sie ein E-Mail Feld aus"
 
-#: includes/email-verification-field.php:218
+#: includes/email-verification-field.php:207
 msgid "Select the email field for verifying the email address entered."
 msgstr ""
 "Wähle das E-Mail-Feld zur Überprüfung der eingegebenen E-Mail-Adresse aus."
 
-#: includes/email-verification-field.php:428
+#: includes/email-verification-field.php:432
 #: includes/field-templates/classic.php:6
 msgid "Send email again"
 msgstr "E-Mail erneut senden"
@@ -112,17 +115,17 @@ msgstr "E-Mail erneut senden"
 msgid "Template not found."
 msgstr "Vorlage nicht gefunden."
 
-#: includes/email-verification-field.php:209
+#: includes/email-verification-field.php:383
 msgid ""
 "This field will initially be hidden on the frontend. After the first "
 "submission, it will be displayed, and an email containing a verification "
 "code will be sent to the email address entered in the form."
 msgstr ""
-"Dieses Feld wird anfangs im Frontend verborgen sein. Nach der ersten "
-"Übermittlung wird es angezeigt, und eine E-Mail mit einem Verifizierungscode "
+"Dieses Feld wird anfangs im Frontend verborgen sein. Nach dem Absenden des "
+"Formulars wird es angezeigt, und eine E-Mail mit einem Verifizierungscode "
 "wird an die im Formular eingegebene E-Mail-Adresse gesendet."
 
-#: includes/email-verification-field.php:250
+#: includes/email-verification-field.php:239
 msgid "Verification Code Length"
 msgstr "Länge des Verifizierungscodes"
 
@@ -130,15 +133,15 @@ msgstr "Länge des Verifizierungscodes"
 msgid "Verification code sent."
 msgstr "Verifizierungscode gesendet."
 
-#: includes/email-verification-field.php:233
+#: includes/email-verification-field.php:222
 msgid "Verification Design"
 msgstr "Verifizierungsdesign"
 
-#: includes/email-verification-field.php:367
+#: includes/email-verification-field.php:356
 msgid "Verification Email Body"
 msgstr "Inhalt der Verifizierungs-E-Mail"
 
-#: includes/email-verification-field.php:346
+#: includes/email-verification-field.php:335
 msgid "Verification Email Subject"
 msgstr "Betreff der Verifizierungs-E-Mail"
 
@@ -162,10 +165,10 @@ msgstr ""
 "Sie können nur alle 30 Sekunden einen Verifizierungscode von dieser IP-"
 "Adresse anfordern."
 
-#: includes/email-verification-field.php:348
-#: includes/email-verification-field.php:368
+#: includes/email-verification-field.php:337
+#: includes/email-verification-field.php:357
 msgid "You can use {{code}}, it will be replaced with the verification code."
-msgstr "Verwende {{code}}, es wird durch den Verifizierungscode ersetzt."
+msgstr "Verwenden Sie {{code}}, es wird durch den Verifizierungscode ersetzt."
 
 #: includes/email-handler.php:65
 msgid "Your Verification Code is: {{code}}"
