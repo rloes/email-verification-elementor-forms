@@ -10,9 +10,9 @@ $loader_html = apply_filters('evef/classic/loader_html', '<div class="evef-loade
 ?>
 
 <input <?= $form->get_render_attribute_string('input' . $item_index) ?> >
-<span role="button" class="send-code-again" tabindex="0">
+<span role="button" class="send-code-again" tabindex="0" aria-live="polite">
     <span class="normal"><?= $normal_text ?></span>
-    <span class="success" style="display:none;"><?= $success_text ?></span>
-    <span class="error" style="display:none;"><?= $error_text ?></span>
+    <span class="success" style="display:none;" aria-hidden="true"><?= $success_text ?></span>
+    <span class="error" style="display:none;" aria-hidden="true"><?= $error_text ?></span>
     <?= $loader_html ?>
 </span>

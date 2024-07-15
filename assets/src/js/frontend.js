@@ -33,7 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (this.sendAgainButton) {
                     this.resetSendAgainButtonState(this.sendAgainButton);
                     this.sendAgainButton.addEventListener('click', (e) => {
-                        this.handleSendAgainClick(e);
+                        this.handleSendAgain(e);
+                    });
+                    this.sendAgainButton.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            this.handleSendAgain(e);
+                        }
                     });
                 }
 
@@ -98,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
          * Only works every 30s per ip address
          * @param e
          */
-        handleSendAgainClick(e) {
+        handleSendAgain(e) {
             e.preventDefault();
             e.stopPropagation();
             // Only go through if button is in normal state
@@ -142,8 +148,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSendAgainButtonState(state) {
             const states = ['normal', 'success', 'error'];
             states.forEach(s => {
-                this.sendAgainButton.querySelector(`.${s}`).style.display = s === state ? "" : "none";
+                const element = this.sendAgainButton.querySelector(`.${s}`);
+                const isActiveState = (s === state);
+                element.style.display = isActiveState ? "" : "none";
+                element.setAttribute('aria-hidden', isActiveState ? 'false' : 'true');
             });
+
             if (state === 'success') {
                 this.startTimer();
             } else if (state === 'normal' && this.timer) {
