@@ -18,7 +18,7 @@ class Code_Generator
         $min = pow(10, $digits - 1);
         $max = pow(10, $digits) - 1;
 
-        $code = apply_filters("evef/generated_code", wp_rand($min, $max), $digits);
+        $code = apply_filters("evef/generator/code", wp_rand($min, $max), $digits);
 
         return $code;
     }

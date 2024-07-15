@@ -19,7 +19,6 @@ class Email_Handler
 
         // Apply filters to all parameters
         $email = apply_filters('evef/email/email_to', $email);
-        $code = apply_filters('evef/email/code', $code);
         $email_from = apply_filters('evef/email/email_from', $email_from);
         $email_from_name = apply_filters('evef/email/email_from_name', $email_from_name);
         $email_to_bcc = apply_filters('evef/email/email_to_bcc', $email_to_bcc);
