@@ -67,9 +67,6 @@ final class Plugin
         add_action('wp_ajax_' . Constants::AJAX_ACTION_SEND_VERIFICATION_CODE, [__NAMESPACE__ . '\Ajax_Handler', 'send_verification_code']);
         add_action('wp_ajax_nopriv_' . Constants::AJAX_ACTION_SEND_VERIFICATION_CODE, [__NAMESPACE__ . '\Ajax_Handler', 'send_verification_code']);
         add_action('wp_enqueue_scripts', [$this, 'register_assets']);
-        add_action('elementor-pro/forms/pre_render', function ($instance, $form) {
-            wp_enqueue_style('elementor-icons');
-        }, 10, 2);
         add_action('init', [$this, 'load_textdomain']);
     }
 
