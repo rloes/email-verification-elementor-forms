@@ -427,6 +427,7 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
     public function enqueue_editor_assets()
     {
         wp_register_script("evef-scripts-editor", EVEF_PLUGIN_URL . "assets/dist/js/editor.min.js", ["jquery", "wp-i18n"], EVEF_VERSION, true);
+        wp_set_script_translations( 'evef-scripts-editor', 'email-verification-elementor-forms', EVEF_PLUGIN_DIR . 'languages' );
         wp_enqueue_script("evef-scripts-editor",);
         wp_localize_script("evef-scripts-editor", "evefEditorConfig", array(
             "normal_text" => apply_filters("evef/classic/normal_text", esc_html__("Send email again", "email-verification-elementor-forms")),
