@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-07 11:16+0000\n"
-"PO-Revision-Date: 2024-07-15 15:08+0000\n"
+"PO-Revision-Date: 2024-07-15 19:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
@@ -15,6 +15,7 @@ msgstr ""
 "X-Loco-Version: 2.6.10; wp-6.5.5"
 
 #. Description of the plugin
+#: C:\Users\robin\IdeaProjects\email-verification-elementor-forms\email-verification-elementor-forms.php
 msgid ""
 "Add email verification into your Elementor forms. Users verify their email "
 "via a code, ensuring only valid form submissions and reducing spam."
@@ -31,7 +32,7 @@ msgstr ""
 "Nach dem Absenden des Formulars wird ein Verifizierungscode per E-Mail "
 "versendet, und diese Nachricht wird angezeigt."
 
-#: includes/email-verification-field.php:434
+#: includes/email-verification-field.php:435
 #: includes/field-templates/classic.php:8
 msgid "An error occured while sending the mail"
 msgstr "Beim Senden der E-Mail ist ein Fehler aufgetreten"
@@ -45,7 +46,7 @@ msgid "E-Mail Field"
 msgstr "E-Mail Feld"
 
 #: includes/email-verification-field.php:54
-#: includes/email-verification-field.php:57
+#: includes/email-verification-field.php:57 assets/dist/js/editor.min.js:8
 msgid "E-Mail field could not be found"
 msgstr "E-Mail Feld konnte nicht gefunden werden"
 
@@ -55,11 +56,12 @@ msgstr ""
 "Die E-Mail Verifizierung ist nicht korrekt eingestellt. Bitte kontaktieren "
 "Sie einen Administrator."
 
-#. Name of the plugin
+#. Plugin Name of the plugin
+#: C:\Users\robin\IdeaProjects\email-verification-elementor-forms\email-verification-elementor-forms.php
 msgid "Email Verification for Elementor Forms"
 msgstr "E-Mail-Verifizierung für Elementor-Formulare"
 
-#: email-verification-elementor-forms.php:98
+#: email-verification-elementor-forms.php:95
 msgid ""
 "Email Verification for Elementor Forms requires Elementor Pro to be "
 "installed and activated."
@@ -67,22 +69,20 @@ msgstr ""
 "E-Mail-Verifizierung für Elementor-Formulare erfordert, dass Elementor Pro "
 "installiert und aktiviert ist."
 
-#: includes/email-verification-field.php:433
+#: includes/email-verification-field.php:434
 msgid "Email was sent again"
 msgstr "E-Mail wurde erneut gesendet"
 
 #: includes/field-templates/classic.php:7
-#, php-format
 msgid "Email was sent again, check spam or try again in %s seconds."
 msgstr ""
 "Die E-Mail wurde erneut gesendet, überprüfen Sie den Spamordner oder "
 "versuchen Sie es in %s Sekunden erneut."
 
-#: includes/email-verification-field.php:70
-#, php-format
+#: includes/email-verification-field.php:70 assets/dist/js/editor.min.js:15
 #| msgid "Enter %s-digit code"
 msgid "Enter your %s-digit code"
-msgstr "Bitte Sie Ihren %s-stelligen Code ein"
+msgstr "Bitte geben Sie den %s-stelligen Code ein"
 
 #: includes/email-verification-field.php:116
 msgid "Invalid verification code."
@@ -93,6 +93,7 @@ msgid "Number of digits must be at least 1."
 msgstr "Die Anzahl der Ziffern muss mindestens 1 betragen."
 
 #. Author of the plugin
+#: C:\Users\robin\IdeaProjects\email-verification-elementor-forms\email-verification-elementor-forms.php
 msgid "Robin | Westsite"
 msgstr "Robin | Westsite"
 
@@ -105,7 +106,7 @@ msgid "Select the email field for verifying the email address entered."
 msgstr ""
 "Wähle das E-Mail-Feld zur Überprüfung der eingegebenen E-Mail-Adresse aus."
 
-#: includes/email-verification-field.php:432
+#: includes/email-verification-field.php:433
 #: includes/field-templates/classic.php:6
 msgid "Send email again"
 msgstr "E-Mail erneut senden"

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Email Verification for Elementor Forms\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-07 11:16+0000\n"
-"PO-Revision-Date: 2024-07-15 15:09+0000\n"
+"PO-Revision-Date: 2024-07-15 19:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: Deutsch (Sie)\n"
 "Language: de_DE_formal\n"
@@ -45,7 +45,7 @@ msgid "E-Mail Field"
 msgstr "E-Mail Feld"
 
 #: includes/email-verification-field.php:54
-#: includes/email-verification-field.php:57 assets/src/js/editor.js
+#: includes/email-verification-field.php:57 assets/dist/js/editor.min.js
 #: assets/dist/js/editor.min.js
 msgid "E-Mail field could not be found"
 msgstr "E-Mail Feld konnte nicht gefunden werden"
@@ -83,7 +83,7 @@ msgstr ""
 #, php-format
 #| msgid "Enter %s-digit code"
 msgid "Enter your %s-digit code"
-msgstr "Bitte Sie Ihren %s-stelligen Code ein"
+msgstr "Bitte geben Sie den %s-stelligen Code ein"
 
 #: includes/email-verification-field.php:116
 msgid "Invalid verification code."
