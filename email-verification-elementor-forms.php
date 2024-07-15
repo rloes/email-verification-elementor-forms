@@ -45,20 +45,6 @@ final class Plugin
         define('EVEF_PLUGIN_URL', plugin_dir_url(__FILE__));
     }
 
-    private function includes()
-    {
-        $require = [
-            "ajax-handler",
-            "code-generator",
-            "email-handler",
-            "email-verification-field",
-            "constants"
-        ];
-        foreach ($require as $file) {
-            require_once EVEF_PLUGIN_DIR . 'includes/' . $file . '.php';
-        }
-    }
-
     public function autoload_classes()
     {
         spl_autoload_register(function ($class_name) {
