@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-07-07 11:16+0000\n"
-"PO-Revision-Date: 2024-07-11 23:30+0000\n"
+"PO-Revision-Date: 2024-07-15 14:58+0000\n"
 "Last-Translator: \n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
@@ -83,7 +83,7 @@ msgstr "%s-stelligen Code eingeben"
 
 #: includes/email-verification-field.php:116
 msgid "Invalid verification code."
-msgstr "Ungültiger Verifizierungscode."
+msgstr "Der Verifizierungscode ist ungültig."
 
 #: includes/code-generator.php:13
 msgid "Number of digits must be at least 1."
@@ -118,8 +118,8 @@ msgid ""
 "submission, it will be displayed, and an email containing a verification "
 "code will be sent to the email address entered in the form."
 msgstr ""
-"Dieses Feld wird anfangs im Frontend verborgen sein. Nach der ersten "
-"Übermittlung wird es angezeigt, und eine E-Mail mit einem Verifizierungscode "
+"Dieses Feld wird anfangs im Frontend verborgen sein. Nach dem Absenden des "
+"Formulars wird es angezeigt, und eine E-Mail mit einem Verifizierungscode "
 "wird an die im Formular eingegebene E-Mail-Adresse gesendet."
 
 #: includes/email-verification-field.php:250

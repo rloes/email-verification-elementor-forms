@@ -12,8 +12,7 @@ elementor.hooks.addFilter(
         const fieldClass = `elementor-field-textual elementor-${evefEditorConfig.field_type_constant}-field elementor-field elementor-size-${settings.input_size} ${item.css_classes}`;
         const maxLength = item[`${evefEditorConfig.code_length_constant}`];
         const pattern = `\\d{${maxLength}}`; // Changed to string
-        const placeholderRaw = "Geben Sie den %s-stelligen Code ein"; // Fixed the missing closing quote
-        const placeholder = placeholderRaw.replace("%s", maxLength);
+        const placeholder = sprintf(__("Enter your %s-digit code", "email-verification-elementor-forms"), maxLength);
 
         return `
                 <input size="1" type="${item.field_type}" id="${fieldId}" class="${fieldClass}" name="${fieldId}"
