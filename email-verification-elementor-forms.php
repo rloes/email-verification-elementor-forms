@@ -1,11 +1,16 @@
 <?php
-/*
-Plugin Name: Email Verification for Elementor Forms
-Description: Adds a custom email verification field to Elementor forms.
-Version: 0.1
-Author: Robin | Westsite
-Text Domain: email-verification-elementor-forms
-*/
+/**
+ * Plugin Name: Email Verification for Elementor Forms
+ * Description: Adds a custom email verification field to Elementor forms.
+ * Version: 0.1.0
+ * Author: Robin | Westsite
+ * Text Domain: email-verification-elementor-forms
+ * Requires PHP: 8.0
+ * Requires at least: 6.0
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires Plugins:  elementor
+ */
 
 namespace EVEF;
 
@@ -90,7 +95,7 @@ final class Plugin
 
     public function load_textdomain()
     {
-        load_plugin_textdomain("email-verification-elementor-forms", false, dirname( plugin_basename( __FILE__ ) ) . '/languages');
+        load_plugin_textdomain("email-verification-elementor-forms", false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
 }
