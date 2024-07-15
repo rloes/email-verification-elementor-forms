@@ -67,6 +67,7 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
             [
                 "maxlength" => $code_length,
                 "pattern" => "\d{" . $code_length . "}",
+                /* translators: %s: Number of Digits in verification code */
                 "placeholder" => sprintf(esc_attr__("Enter your %s-digit code", "email-verification-elementor-forms"), $code_length),
                 "class" => "elementor-field elementor-" . $this->get_type() . "-field elementor-field-textual",
                 "data-email-field" => esc_attr($email_field_id),

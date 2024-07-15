@@ -4,6 +4,7 @@
 
 if (!defined('ABSPATH')) exit;
 $normal_text = apply_filters('evef/classic/normal_text', __('Send email again', 'email-verification-elementor-forms'));
+/* translators: %s: Countdown, until sent again is available again. */
 $success_text = apply_filters('evef/classic/success_text', sprintf(__('Email was sent again, check spam or try again in %s seconds.', 'email-verification-elementor-forms'), "<span class='timer'></span>"));
 $error_text = apply_filters('evef/classic/error_text', __('An error occured while sending the mail', 'email-verification-elementor-forms'));
 $loader_html = apply_filters('evef/classic/loader_html', '<div class="evef-loader"></div>');
