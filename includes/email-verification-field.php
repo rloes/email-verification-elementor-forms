@@ -258,7 +258,7 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
                 "name" => Constants::VERIFICATION_MESSAGE,
                 "type" => \Elementor\Controls_Manager::TEXTAREA,
 
-                "label" => esc_html__("E-Mail sent message"),
+                "label" => esc_html__("E-Mail sent message", "email-verification-elementor-forms"),
                 "default" => $this->get_default_email_sent_message(),
                 "description" => esc_html__("After submitting the form, a verification code will be emailed, and this message will appear.", "email-verification-elementor-forms"),
                 "label_block" => true,
@@ -268,6 +268,9 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
                 "condition" => [
                     "field_type" => $this->get_type(),
                 ],
+                "tab" => "content",
+                "inner_tab" => "form_fields_content_tab",
+                "tabs_wrapper" => "form_fields_tabs",
                 "render_type" => "none",
                 "dynamic" => [
                     "active" => true,
@@ -382,6 +385,9 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
                             "type" => \Elementor\Controls_Manager::ALERT,
                             "alert_type" => "info",
                             "content" => esc_html__("This field will initially be hidden on the frontend. After the first submission, it will be displayed, and an email containing a verification code will be sent to the email address entered in the form.", "email-verification-elementor-forms"),
+                            "condition" => [
+                                "field_type" => $this->get_type(),
+                            ],
                             "tab" => "content",
                             "inner_tab" => "form_fields_content_tab",
                             "tabs_wrapper" => "form_fields_tabs",
