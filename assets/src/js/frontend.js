@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     class VerificationFieldHandler {
         TIMEOUT_IN_MS = 30000
+
         constructor(field) {
             this.$field = jQuery(field);
             this.ajaxUrl = evefFrontendConfig?.ajax_url;
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const emailFieldID = "form-field-" + this.$field.data('email-field');
             this.$emailField = jQuery('#' + emailFieldID);
             this.sendAgainButton = this.$field[0].parentElement.querySelector('.send-code-again');
+            this.ajaxCompleteHandler = (event, xhr, settings) => this.handleAjaxComplete(settings, xhr);
             this.timer = null;
             this.fieldId = this.getFieldIdFromFieldElement(this.$field[0])
             if (this.ajaxUrl && this.nonce && this.$emailField && this.sendAgainButton) {
@@ -43,9 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                jQuery(document).ajaxComplete((event, xhr, settings) => {
-                    this.handleAjaxComplete(settings, xhr);
-                });
+                jQuery(document).ajaxComplete(this.ajaxCompleteHandler);
             }
         }
 
@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }).done((data, textStatus, jqXHR) => {
                 this.updateSendAgainButtonState('success');
             }).fail((jqXHR, textStatus, errorThrown) => {
+                console.error("EVEF: Ajax request failed", textStatus, errorThrown);
                 this.updateSendAgainButtonState('error');
             }).always((jqXHR, textStatus, errorThrown) => {
                 this.sendAgainButton.classList.remove('loading');
@@ -209,18 +210,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }, 1000);
         }
+
+        destroy() {
+            this.sendAgainButton.removeEventListener('click', this.handleSendAgain);
+            this.sendAgainButton.removeEventListener('keydown', this.handleSendAgain);
+            jQuery(document).off('ajaxComplete', this.ajaxCompleteHandler);
+            if (this.timer) {
+                clearInterval(this.timer);
+                this.timer = null;
+            }
+        }
     }
 
-    const initializedFields = new Set();
+    const fieldHandlers = [];
 
     function initializeVerificationHandlers() {
         const verificationFields = document.querySelectorAll('form .elementor-evef-verification-field');
-        verificationFields.forEach(field => {
-            if (!initializedFields.has(field)) {
-                new VerificationFieldHandler(field);
-                initializedFields.add(field);
+        const handlersToRemove = [];
+
+        // Check and clean up removed fields
+        fieldHandlers.forEach(handler => {
+            if (!document.contains(handler.field)) {
+                handler.destroy();
+                handlersToRemove.push(handler);
             }
         });
+
+        handlersToRemove.forEach(handler => {
+            const index = fieldHandlers.indexOf(handler);
+            if (index !== -1) {
+                fieldHandlers.splice(index, 1);
+            }
+        });
+
+        // Initialize handlers for new fields
+        verificationFields.forEach(field => {
+            if (!handlerExistsForField(field)) {
+                const handler = new VerificationFieldHandler(field);
+                fieldHandlers.push(handler);
+            }
+        });
+    }
+
+    function handlerExistsForField(field) {
+        return fieldHandlers.some(handler => handler.field === field);
     }
 
     jQuery(window).on('elementor/frontend/init', () => {
@@ -228,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             initializeVerificationHandlers();
         });
     });
+
 
 });
 
