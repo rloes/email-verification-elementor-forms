@@ -12,7 +12,16 @@ class Ajax_Handler
     {
         check_ajax_referer(Constants::AJAX_ACTION_SEND_VERIFICATION_CODE);
 
-        $ip_address = $_SERVER['REMOTE_ADDR'];
+        // Sanitize the IP address
+        $ip_address = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+
+        // If the IP address is not valid, return an error
+        if ($ip_address === false) {
+            wp_send_json_error([
+                'message' => esc_html__('Invalid IP address.', 'email-verification-elementor-forms')
+            ]);
+            return;
+        }
 
         if (get_transient('evef_verification_timeout_ip_' . $ip_address)) {
             wp_send_json_error([
@@ -33,7 +42,7 @@ class Ajax_Handler
         if (!empty($settings)) {
             $form_fields = $settings["form_fields"];
             $field_index = array_search($field_id, array_column($form_fields, "custom_id"));
-            if ($field_index) {
+            if ($field_index !== false) {
                 $field = $form_fields[$field_index];
                 // get all relevant settings from field settings by deconstructing
                 [
@@ -45,15 +54,13 @@ class Ajax_Handler
                     Constants::EMAIL_BODY => $body,
                 ] = $field;
             }
-
         }
         $code_length = intval($code_length);
         $code_length = $code_length > 0 ? $code_length : 6;
         $code = Code_Generator::generate_code($code_length);
         set_transient(Constants::VERIFICATION_CODE_TRANSIENT_PREFIX . $email, $code, 15 * MINUTE_IN_SECONDS);
 
-
-        Email_Handler::send_verification_email($email, $code,$email_from, $email_from_name, $email_to_bcc, $subject, $body);
+        Email_Handler::send_verification_email($email, $code, $email_from, $email_from_name, $email_to_bcc, $subject, $body);
 
         set_transient('evef_verification_timeout_ip_' . $ip_address, true, 30);
         // Send response with widget settings
