@@ -52,10 +52,6 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
         if (!$email_field_valid) {
             if (\Elementor\Plugin::$instance->editor->is_edit_mode()) {
                 echo "<p>" . esc_html__("E-Mail field could not be found", "email-verification-elementor-forms") . "</p>";
-            } else {
-                echo "<script>console.error('E-Mail Verification Elementor Forms:" .
-                    esc_html__("E-Mail field could not be found", "email-verification-elementor-forms") .
-                    "')</script>";
             }
             return;
         }
