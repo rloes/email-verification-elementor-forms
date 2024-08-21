@@ -10,10 +10,10 @@ $error_text = apply_filters('evef/classic/error_text', __('An error occured whil
 $loader_html = apply_filters('evef/classic/loader_html', '<div class="evef-loader"></div>');
 ?>
 
-<input <?= $form->get_render_attribute_string('input' . $item_index) ?> >
+<input <?php echo $form->get_render_attribute_string('input' . $item_index) ?> >
 <span role="button" class="send-code-again" tabindex="0" aria-live="polite">
-    <span class="normal"><?= esc_html($normal_text) ?></span>
-    <span class="success" style="display:none;" aria-hidden="true"><?= sprintf(esc_html($success_text),"<span class='timer'></span>") ?></span>
-    <span class="error" style="display:none;" aria-hidden="true"><?= esc_html($error_text) ?></span>
-    <?= wp_kses_post($loader_html) ?>
+    <span class="normal"><?php echo esc_html($normal_text) ?></span>
+    <span class="success" style="display:none;" aria-hidden="true"><?php echo sprintf(esc_html($success_text),"<span class='timer'></span>") ?></span>
+    <span class="error" style="display:none;" aria-hidden="true"><?php echo esc_html($error_text) ?></span>
+    <?php echo wp_kses_post($loader_html) ?>
 </span>
