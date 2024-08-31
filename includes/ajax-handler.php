@@ -13,8 +13,7 @@ class Ajax_Handler
         check_ajax_referer(Constants::AJAX_ACTION_SEND_VERIFICATION_CODE);
 
         // Check if REMOTE_ADDR is set and then sanitize the IP address
-        $ip_address = isset($_SERVER['REMOTE_ADDR']) ? filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP) : false;
-
+        $ip_address = isset($_SERVER['REMOTE_ADDR']) ? filter_var(wp_unslash($_SERVER['REMOTE_ADDR']), FILTER_VALIDATE_IP) : false;
         // If the IP address is not set or not valid, return an error
         if ($ip_address === false) {
             wp_send_json_error([
@@ -30,7 +29,7 @@ class Ajax_Handler
             return;
         }
 
-        $email = sanitize_email($_POST['email']);
+        $email = sanitize_email(wp_unslash($_POST['email']));
 
         // Retrieve page ID and widget ID from AJAX request
         $post_id = intval($_POST['post_id']);
