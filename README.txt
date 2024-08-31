@@ -35,6 +35,9 @@ Yes, the plugin provides filters to customize the text and appearance of the ema
 
 == Changelog ==
 
+= 1.1.2 =
+* Add Author URI
+
 = 1.1.1 =
 * Fix version in main plugin file
 
