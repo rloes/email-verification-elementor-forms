@@ -2,7 +2,7 @@
 Contributors: rloes
 Tags: email verification, elementor, forms, spam prevention
 Requires at least: 5.0
-Tested up to: 6.5
+Tested up to: 6.6
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -11,7 +11,7 @@ Add an email verification field to your Elementor forms. Users receive a code to
 
 == Description ==
 
-Add email verification into your Elementor forms. Users verify their email via a code, ensuring only valid form submissions and reducing spam.
+Add email verification to Elementor forms: users confirm via code, ensuring valid submissions and reducing spam.
 
 == Installation ==
 
