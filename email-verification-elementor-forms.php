@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Email Verification for Elementor Forms
  * Description: Add email verification into your Elementor forms. Users verify their email via a code, ensuring only valid form submissions and reducing spam.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: Robin | Westsite
  * Author URI: https://westsite-webdesign.de/
  * Text Domain: email-verification-elementor-forms
