@@ -4,6 +4,7 @@
  * Description: Add email verification into your Elementor forms. Users verify their email via a code, ensuring only valid form submissions and reducing spam.
  * Version: 1.1.1
  * Author: Robin | Westsite
+ * Author URI: https://westsite-webdesign.de/
  * Text Domain: email-verification-elementor-forms
  * Requires PHP: 8.0
  * Requires at least: 6.0
