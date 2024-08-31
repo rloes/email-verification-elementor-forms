@@ -5,7 +5,6 @@ import babel from 'gulp-babel';
 import rename from 'gulp-rename';
 import uglify from 'gulp-uglify';
 import cleanCSS from 'gulp-clean-css';
-import zip from 'gulp-zip';
 
 const sass = gulpSass(dartSass);
 
@@ -27,8 +26,7 @@ const paths = {
             '!assets/src/**',
             '!*.zip'
         ],
-        dest: './',
-        zipName: 'email-verification-elementor-forms.zip'
+        dest: 'C:\\Users\\robin\\svn\\email-verification-elementor-forms\\trunk' // New directory for SVN
     }
 };
 
@@ -58,11 +56,10 @@ const watch = () => {
     gulp.watch(paths.scripts.src, scripts);
 };
 
-// Create release zip file
+// Copy necessary files to SVN directory instead of zipping
 const release = gulp.series(styles, scripts, () => {
     return gulp.src(paths.release.src)
-        .pipe(zip(paths.release.zipName))
-        .pipe(gulp.dest(paths.release.dest));
+        .pipe(gulp.dest(paths.release.dest)); // Copy to svn directory
 });
 
 // Default task
