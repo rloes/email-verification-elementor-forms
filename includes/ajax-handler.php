@@ -29,31 +29,71 @@ class Ajax_Handler
             return;
         }
 
+        // Validate and sanitize email
+        if (empty($_POST['email'])) {
+            wp_send_json_error([
+                'message' => esc_html__('Email is required.', 'email-verification-elementor-forms')
+            ]);
+            return;
+        }
         $email = sanitize_email(wp_unslash($_POST['email']));
 
-        // Retrieve page ID and widget ID from AJAX request
+        // Validate and sanitize post_id
+        if (empty($_POST['post_id']) || !is_numeric($_POST['post_id'])) {
+            wp_send_json_error([
+                'message' => esc_html__('Invalid or missing post ID.', 'email-verification-elementor-forms')
+            ]);
+            return;
+        }
         $post_id = intval($_POST['post_id']);
+
+        // Validate and sanitize widget_id
+        if (empty($_POST['widget_id'])) {
+            wp_send_json_error([
+                'message' => esc_html__('Widget ID is required.', 'email-verification-elementor-forms')
+            ]);
+            return;
+        }
         $widget_id = sanitize_key($_POST['widget_id']);
+
+        // Validate and sanitize field_id
+        if (empty($_POST['field_id'])) {
+            wp_send_json_error([
+                'message' => esc_html__('Field ID is required.', 'email-verification-elementor-forms')
+            ]);
+            return;
+        }
         $field_id = sanitize_key($_POST["field_id"]);
 
         // Get widget settings
         $settings = self::get_widget_settings($post_id, $widget_id);
-        if (!empty($settings)) {
-            $form_fields = $settings["form_fields"];
-            $field_index = array_search($field_id, array_column($form_fields, "custom_id"));
-            if ($field_index !== false) {
-                $field = $form_fields[$field_index];
-                // get all relevant settings from field settings by deconstructing
-                [
-                    Constants::CODE_LENGTH => $code_length,
-                    Constants::EMAIL_FROM => $email_from,
-                    Constants::EMAIL_FROM_NAME => $email_from_name,
-                    Constants::EMAIL_TO_BCC => $email_to_bcc,
-                    Constants::EMAIL_SUBJECT => $subject,
-                    Constants::EMAIL_BODY => $body,
-                ] = $field;
-            }
+        if (empty($settings)) {
+            wp_send_json_error([
+                'message' => esc_html__('Form Widget settings could not be retrieved.', 'email-verification-elementor-forms')
+            ]);
+            return;
         }
+
+        $form_fields = $settings["form_fields"];
+        $field_index = array_search($field_id, array_column($form_fields, "custom_id"));
+        if ($field_index === false) {
+            wp_send_json_error([
+                'message' => esc_html__('Field ID not found in widget settings.', 'email-verification-elementor-forms')
+            ]);
+            return;
+        }
+
+        $field = $form_fields[$field_index];
+        // Get all relevant settings from field settings by deconstructing
+        [
+            Constants::CODE_LENGTH => $code_length,
+            Constants::EMAIL_FROM => $email_from,
+            Constants::EMAIL_FROM_NAME => $email_from_name,
+            Constants::EMAIL_TO_BCC => $email_to_bcc,
+            Constants::EMAIL_SUBJECT => $subject,
+            Constants::EMAIL_BODY => $body,
+        ] = $field;
+
         $code_length = intval($code_length);
         $code_length = $code_length > 0 ? $code_length : 6;
         $code = Code_Generator::generate_code($code_length);
@@ -93,4 +133,5 @@ class Ajax_Handler
         return $widget_data['settings'];
     }
 }
+
 
