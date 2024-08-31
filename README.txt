@@ -7,11 +7,11 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Add an email verification field to your Elementor forms. Users receive a code to the email entered on first submit and can only submit the form if they enter the code. This ensures submissions from verified emails, reducing spam.
+Add email verification to Elementor forms: users confirm via code, ensuring valid submissions and reducing spam.
 
 == Description ==
 
-Add email verification to Elementor forms: users confirm via code, ensuring valid submissions and reducing spam.
+Add an email verification field to your Elementor forms. Users receive a code to the email entered on first submit and can only submit the form if they enter the code. This ensures submissions from verified emails, reducing spam.
 
 == Installation ==
 
