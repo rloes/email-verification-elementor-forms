@@ -393,7 +393,7 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
         }
         $control_data["fields"] = $this->inject_field_controls($control_data["fields"], $field_controls);
         foreach ($control_data["fields"] as $index => $field) {
-            if ("required" === $field["name"] || "width" === $field["name"]) {
+            if ("required" === $field["name"]) {
                 $control_data["fields"][$index]["conditions"]["terms"][] = [
                     "name" => "field_type",
                     "operator" => "!in",
