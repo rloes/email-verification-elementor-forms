@@ -12,13 +12,13 @@ class Ajax_Handler
     {
         check_ajax_referer(Constants::AJAX_ACTION_SEND_VERIFICATION_CODE);
 
-        // Sanitize the IP address
-        $ip_address = filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP);
+        // Check if REMOTE_ADDR is set and then sanitize the IP address
+        $ip_address = isset($_SERVER['REMOTE_ADDR']) ? filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP) : false;
 
-        // If the IP address is not valid, return an error
+        // If the IP address is not set or not valid, return an error
         if ($ip_address === false) {
             wp_send_json_error([
-                'message' => esc_html__('Invalid IP address.', 'email-verification-elementor-forms')
+                'message' => esc_html__('Invalid IP address or IP address not available.', 'email-verification-elementor-forms')
             ]);
             return;
         }
