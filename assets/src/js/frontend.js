@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const emailFieldID = "form-field-" + this.$field.data('email-field');
             this.$emailField = jQuery('#' + emailFieldID);
             this.sendAgainButton = this.$field[0].parentElement.querySelector('.send-code-again');
+            this.defaultErrorMsg = this.sendAgainButton?.querySelector('.error')?.textContent || "An error occurred";
             this.ajaxCompleteHandler = (event, xhr, settings) => this.handleAjaxComplete(settings, xhr);
             this.timer = null;
             this.fieldId = this.getFieldIdFromFieldElement(this.$field[0])
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         $verificationFieldGroup.addClass('code-sent');
                         this.toggleFormFieldRequirement(this.$field, $verificationFieldGroup, true);
                         this.removeFormError();
-                    } else if (xhr.responseJSON.success === true) {
+                    } else if (xhr.responseJSON?.success === true) {
                         $verificationFieldGroup.removeClass('code-sent')
                         this.toggleFormFieldRequirement(this.$field, $verificationFieldGroup, false)
                     }
@@ -131,13 +132,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     field_id: this.fieldId
                 }
             }).done((data, textStatus, jqXHR) => {
-                if(data.timeout){
-                    timeout = data.timeout;
+                if (data.data?.timeout) {
+                    timeout = data.data.timeout;
                 }
-                if(data.success) {
-                    this.updateSendAgainButtonState('success', timeout);
-                }else{
-                    this.updateSendAgainButtonState('error');
+                if (data.success) {
+                    this.updateSendAgainButtonState('success', {timeout: timeout});
+                } else {
+                    this.updateSendAgainButtonState('error', {message: data.data?.message});
                 }
             }).fail((jqXHR, textStatus, errorThrown) => {
                 console.error("EVEF: Ajax request failed", textStatus, errorThrown);
@@ -153,19 +154,27 @@ document.addEventListener('DOMContentLoaded', () => {
         /**
          * Inside the sent-again there are all markup included, hide and reveal accordingly
          * @param state
-         * @param timeout
+         * @param _args
          */
-        updateSendAgainButtonState(state, timeout = this.TIMEOUT_IN_SEC) {
+        updateSendAgainButtonState(state, _args = {}) {
+            const args = {
+                timeout: this.TIMEOUT_IN_SEC,
+                message: this.defaultErrorMsg,
+                ..._args
+            }
             const states = ['normal', 'success', 'error'];
             states.forEach(s => {
                 const element = this.sendAgainButton.querySelector(`.${s}`);
                 const isActiveState = (s === state);
                 element.style.display = isActiveState ? "" : "none";
                 element.setAttribute('aria-hidden', isActiveState ? 'false' : 'true');
+                if (state === "error" && s === "error") {
+                    element.textContent = args.message
+                }
             });
 
             if (state === 'success') {
-                this.startTimer(timeout);
+                this.startTimer(args.timeout);
             } else if (state === 'normal' && this.timer) {
                 clearInterval(this.timer);
                 this.timer = null;
@@ -206,17 +215,19 @@ document.addEventListener('DOMContentLoaded', () => {
         startTimer(remainingTime = this.TIMEOUT_IN_SEC) {
             let _remainingTime = remainingTime;
             const timerElement = this.sendAgainButton.querySelector('.timer')
-            timerElement.textContent = _remainingTime;
-            this.timer = setInterval(() => {
-                _remainingTime -= 1;
+            if (timerElement) {
                 timerElement.textContent = _remainingTime;
-                if (_remainingTime <= 0) {
-                    clearInterval(this.timer);
-                    this.timer = null;
-                    timerElement.textContent = "";
-                    this.resetSendAgainButtonState();
-                }
-            }, 1000);
+                this.timer = setInterval(() => {
+                    _remainingTime -= 1;
+                    timerElement.textContent = _remainingTime;
+                    if (_remainingTime <= 0) {
+                        clearInterval(this.timer);
+                        this.timer = null;
+                        timerElement.textContent = "";
+                        this.resetSendAgainButtonState();
+                    }
+                }, 1000);
+            }
         }
 
         destroy() {

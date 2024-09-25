@@ -2,7 +2,7 @@
 
 namespace EVEF;
 
-class RateLimiter
+class Rate_Limiter
 {
     private const IP_ATTEMPT_PREFIX = 'evef_verification_attempts_ip_';
     private const EMAIL_ATTEMPT_PREFIX = 'evef_verification_attempts_email_';
@@ -41,13 +41,15 @@ class RateLimiter
         return true;
     }
 
-    public static function increment_attempt($email)
+    public static function increment_attempt($email): int
     {
         $ip_address = isset($_SERVER['REMOTE_ADDR']) ? filter_var(wp_unslash($_SERVER['REMOTE_ADDR']), FILTER_VALIDATE_IP) : false;
         if ($ip_address !== false) {
-            self::increment($ip_address, self::IP_ATTEMPT_PREFIX, self::IP_TIMEOUT_PREFIX);
-            self::increment($email, self::EMAIL_ATTEMPT_PREFIX, self::EMAIL_TIMEOUT_PREFIX);
+            $ip_timeout = self::increment($ip_address, self::IP_ATTEMPT_PREFIX, self::IP_TIMEOUT_PREFIX);
+            $email_timeout = self::increment($email, self::EMAIL_ATTEMPT_PREFIX, self::EMAIL_TIMEOUT_PREFIX);
+            return max($ip_timeout, $email_timeout);
         }
+        return 0;
     }
 
     private static function check_limit($key, $attempt_prefix, $timeout_prefix, $message=null)
@@ -75,7 +77,7 @@ class RateLimiter
         return true;
     }
 
-    private static function increment($key, $attempt_prefix, $timeout_prefix)
+    private static function increment($key, $attempt_prefix, $timeout_prefix) : int
     {
         $attempt_key = $attempt_prefix . $key;
         $timeout_key = $timeout_prefix . $key;
@@ -87,9 +89,9 @@ class RateLimiter
 
         // Calculate timeout and round down to nearest multiple of 5
         $timeout = self::BASE_TIMEOUT * pow(self::GROWTH_FACTOR, $attempts);
-        $rounded_timeout = floor($timeout / 5) * 5;
-
+        $rounded_timeout = (int) floor($timeout / 5) * 5;
         set_transient($timeout_key, true, $rounded_timeout);
+        return $rounded_timeout;
     }
 
     /**
