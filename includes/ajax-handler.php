@@ -12,23 +12,6 @@ class Ajax_Handler
     {
         check_ajax_referer(Constants::AJAX_ACTION_SEND_VERIFICATION_CODE);
 
-        // Check if REMOTE_ADDR is set and then sanitize the IP address
-        $ip_address = isset($_SERVER['REMOTE_ADDR']) ? filter_var(wp_unslash($_SERVER['REMOTE_ADDR']), FILTER_VALIDATE_IP) : false;
-        // If the IP address is not set or not valid, return an error
-        if ($ip_address === false) {
-            wp_send_json_error([
-                'message' => esc_html__('Invalid IP address or IP address not available.', 'email-verification-elementor-forms')
-            ]);
-            return;
-        }
-
-        if (get_transient('evef_verification_timeout_ip_' . $ip_address)) {
-            wp_send_json_error([
-                'message' => esc_html__('You can only request a verification code once every 30 seconds from this IP address.', 'email-verification-elementor-forms')
-            ]);
-            return;
-        }
-
         // Validate and sanitize email
         if (empty($_POST['email'])) {
             wp_send_json_error([
@@ -37,6 +20,15 @@ class Ajax_Handler
             return;
         }
         $email = sanitize_email(wp_unslash($_POST['email']));
+
+        $rate_limit_check = RateLimiter::check_rate_limit($email);
+        if ($rate_limit_check !== true) {
+            wp_send_json_error([
+                'message' => $rate_limit_check['message'],
+                'timeout' => $rate_limit_check['timeout']
+            ]);
+            return;
+        }
 
         // Validate and sanitize post_id
         if (empty($_POST['post_id']) || !is_numeric($_POST['post_id'])) {
@@ -101,7 +93,7 @@ class Ajax_Handler
 
         Email_Handler::send_verification_email($email, $code, $email_from, $email_from_name, $email_to_bcc, $subject, $body);
 
-        set_transient('evef_verification_timeout_ip_' . $ip_address, true, 30);
+        RateLimiter::increment_attempt($email);
         // Send response with widget settings
         wp_send_json_success([
             'message' => esc_html__('Verification code sent.', 'email-verification-elementor-forms'),

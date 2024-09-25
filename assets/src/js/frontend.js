@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     class VerificationFieldHandler {
-        TIMEOUT_IN_MS = 30000
+        TIMEOUT_IN_SEC = 30
 
         constructor(field) {
             this.$field = jQuery(field);
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.$emailField.focus();
                 return;
             }
+            let timeout = this.TIMEOUT_IN_SEC
             this.sendAgainButton.classList.add('loading');
             jQuery.ajax({
                 url: this.ajaxUrl,
@@ -130,7 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     field_id: this.fieldId
                 }
             }).done((data, textStatus, jqXHR) => {
-                this.updateSendAgainButtonState('success');
+                if(data.timeout){
+                    timeout = data.timeout;
+                }
+                if(data.success) {
+                    this.updateSendAgainButtonState('success', timeout);
+                }else{
+                    this.updateSendAgainButtonState('error');
+                }
             }).fail((jqXHR, textStatus, errorThrown) => {
                 console.error("EVEF: Ajax request failed", textStatus, errorThrown);
                 this.updateSendAgainButtonState('error');
@@ -138,15 +146,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.sendAgainButton.classList.remove('loading');
                 setTimeout(() => {
                     this.resetSendAgainButtonState();
-                }, this.TIMEOUT_IN_MS);
+                }, timeout * 1000);
             });
         }
 
         /**
          * Inside the sent-again there are all markup included, hide and reveal accordingly
          * @param state
+         * @param timeout
          */
-        updateSendAgainButtonState(state) {
+        updateSendAgainButtonState(state, timeout = this.TIMEOUT_IN_SEC) {
             const states = ['normal', 'success', 'error'];
             states.forEach(s => {
                 const element = this.sendAgainButton.querySelector(`.${s}`);
@@ -156,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (state === 'success') {
-                this.startTimer();
+                this.startTimer(timeout);
             } else if (state === 'normal' && this.timer) {
                 clearInterval(this.timer);
                 this.timer = null;
@@ -194,15 +203,14 @@ document.addEventListener('DOMContentLoaded', () => {
          * Send email again shouldn't be spammed,
          * this implements the cooldown visually in success text
          */
-        startTimer() {
-            const timerDuration = this.TIMEOUT_IN_MS / 1000; // 30 seconds
-            let remainingTime = timerDuration;
+        startTimer(remainingTime = this.TIMEOUT_IN_SEC) {
+            let _remainingTime = remainingTime;
             const timerElement = this.sendAgainButton.querySelector('.timer')
-            timerElement.textContent = remainingTime;
+            timerElement.textContent = _remainingTime;
             this.timer = setInterval(() => {
-                remainingTime -= 1;
-                timerElement.textContent = remainingTime;
-                if (remainingTime <= 0) {
+                _remainingTime -= 1;
+                timerElement.textContent = _remainingTime;
+                if (_remainingTime <= 0) {
                     clearInterval(this.timer);
                     this.timer = null;
                     timerElement.textContent = "";

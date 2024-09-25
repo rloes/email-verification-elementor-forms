@@ -132,6 +132,15 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
      */
     public function validate_empty_field($field, $record, $ajax_handler, $email)
     {
+        $rate_limit_check = RateLimiter::check_rate_limit($email);
+        if ($rate_limit_check !== true) {
+            $ajax_handler->add_error($field['id'], $rate_limit_check['message']);
+            $ajax_handler->add_response_data($field["id"], [
+                "code_sent" => true,
+            ]);
+            return;
+        }
+
         $email_from = $this->get_setting_for_field_from_record($record, $field, Constants::EMAIL_FROM);
         $email_from_name = $this->get_setting_for_field_from_record($record, $field, Constants::EMAIL_FROM_NAME);
         $email_to_bcc = $this->get_setting_for_field_from_record($record, $field, Constants::EMAIL_TO_BCC);
@@ -156,6 +165,7 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
 
         $mail_sent = Email_Handler::send_verification_email($email, $code, $email_from, $email_from_name, $email_to_bcc, $subject, $body);
         if ($mail_sent) {
+            RateLimiter::increment_attempt($email);
             $ajax_handler->add_error($field["id"], $message);
             $ajax_handler->add_response_data($field["id"], [
                 "code_sent" => true,
@@ -430,7 +440,7 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
     public function enqueue_editor_assets()
     {
         wp_register_script("evef-scripts-editor", EVEF_PLUGIN_URL . "assets/dist/js/editor.min.js", ["jquery", "wp-i18n"], EVEF_VERSION, true);
-        wp_set_script_translations( 'evef-scripts-editor', 'email-verification-elementor-forms', EVEF_PLUGIN_DIR . 'languages' );
+        wp_set_script_translations('evef-scripts-editor', 'email-verification-elementor-forms', EVEF_PLUGIN_DIR . 'languages');
         wp_enqueue_script("evef-scripts-editor",);
         wp_localize_script("evef-scripts-editor", "evefEditorConfig", array(
             "normal_text" => apply_filters("evef/classic/normal_text", esc_html__("Send email again", "email-verification-elementor-forms")),
