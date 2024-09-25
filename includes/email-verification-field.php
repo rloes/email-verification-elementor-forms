@@ -109,7 +109,7 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
             $this->validate_empty_field($field, $record, $ajax_handler, $email);
         } else {
             $code_sent = get_transient(Constants::VERIFICATION_CODE_TRANSIENT_PREFIX . $email);
-            if ($code_entered !== $code_sent) {
+            if ($code_entered !== $code_sent || empty($code_sent)) {
                 $invalid_code_message = apply_filters("evef/valdation/invalid_code_message", esc_html__("Invalid verification code.", "email-verification-elementor-forms"));
                 $ajax_handler->add_error($field["id"], $invalid_code_message);
             } else {
@@ -132,7 +132,7 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
      */
     public function validate_empty_field($field, $record, $ajax_handler, $email)
     {
-        $rate_limit_check = RateLimiter::check_rate_limit($email);
+        $rate_limit_check = Rate_Limiter::check_rate_limit($email);
         if ($rate_limit_check !== true) {
             $ajax_handler->add_error($field['id'], $rate_limit_check['message']);
             $ajax_handler->add_response_data($field["id"], [
@@ -165,13 +165,17 @@ class Email_Verification_Field extends \ElementorPro\Modules\Forms\Fields\Field_
 
         $mail_sent = Email_Handler::send_verification_email($email, $code, $email_from, $email_from_name, $email_to_bcc, $subject, $body);
         if ($mail_sent) {
-            RateLimiter::increment_attempt($email);
+            Rate_Limiter::increment_attempt($email);
             $ajax_handler->add_error($field["id"], $message);
             $ajax_handler->add_response_data($field["id"], [
                 "code_sent" => true,
             ]);
         } else {
-            $ajax_handler->add_error_message($ajax_handler->get_default_message($ajax_handler::SERVER_ERROR, $ajax_handler->get_current_form()["settings"]));
+            //$ajax_handler->add_error_message($ajax_handler->get_default_message($ajax_handler::SERVER_ERROR, $ajax_handler->get_current_form()["settings"]));
+            $ajax_handler->add_error($field["id"], esc_html__("The mail could not be sent. Please contact an admin.", "email-verification-elementor-forms"));
+            $ajax_handler->add_response_data($field["id"], [
+                "code_sent" => true,
+            ]);
         }
     }
 
