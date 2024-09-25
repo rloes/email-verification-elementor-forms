@@ -21,7 +21,7 @@ class Ajax_Handler
         }
         $email = sanitize_email(wp_unslash($_POST['email']));
 
-        $rate_limit_check = RateLimiter::check_rate_limit($email);
+        $rate_limit_check = Rate_Limiter::check_rate_limit($email);
         if ($rate_limit_check !== true) {
             wp_send_json_error([
                 'message' => $rate_limit_check['message'],
@@ -76,7 +76,9 @@ class Ajax_Handler
         }
 
         $field = $form_fields[$field_index];
-        // Get all relevant settings from field settings by deconstructing
+        $field = array_merge([
+            Constants::EMAIL_TO_BCC => null, // Default value if not present
+        ], $field);
         [
             Constants::CODE_LENGTH => $code_length,
             Constants::EMAIL_FROM => $email_from,
@@ -91,13 +93,19 @@ class Ajax_Handler
         $code = Code_Generator::generate_code($code_length);
         set_transient(Constants::VERIFICATION_CODE_TRANSIENT_PREFIX . $email, $code, 15 * MINUTE_IN_SECONDS);
 
-        Email_Handler::send_verification_email($email, $code, $email_from, $email_from_name, $email_to_bcc, $subject, $body);
-
-        RateLimiter::increment_attempt($email);
-        // Send response with widget settings
-        wp_send_json_success([
-            'message' => esc_html__('Verification code sent.', 'email-verification-elementor-forms'),
-        ]);
+        $mail_sent = Email_Handler::send_verification_email($email, $code, $email_from, $email_from_name, $email_to_bcc, $subject, $body);
+        if ($mail_sent) {
+            $timeout = Rate_Limiter::increment_attempt($email);
+            wp_send_json_success([
+                'message' => esc_html__('Verification code sent.', 'email-verification-elementor-forms'),
+                'timeout' => $timeout
+            ]);
+        } else {
+            wp_send_json_error([
+                'message' => esc_html__('The mail could not be sent. Please contact an admin.', 'email-verification-elementor-forms')
+            ]);
+        }
+        return;
     }
 
     /**
