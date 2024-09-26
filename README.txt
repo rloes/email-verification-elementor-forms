@@ -3,7 +3,7 @@ Contributors: rloes
 Tags: email verification, elementor, forms, spam prevention
 Requires at least: 5.0
 Tested up to: 6.6
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,9 @@ Yes, the plugin provides filters to customize the text and appearance of the ema
 == Screenshots ==
 
 == Changelog ==
+
+= 1.2.2 =
+* Set version in plugin header
 
 = 1.2.1 =
 * Set stable tag

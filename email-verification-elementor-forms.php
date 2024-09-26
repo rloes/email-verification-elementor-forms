@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Email Verification for Elementor Forms
  * Description: Add email verification into your Elementor forms. Users verify their email via a code, ensuring only valid form submissions and reducing spam.
- * Version: 1.1.2
+ * Version: 1.2.2
  * Author: Robin - Westsite
  * Author URI: https://westsite-webdesign.de/
  * Plugin URI: https://github.com/rloes/email-verification-elementor-forms
@@ -43,7 +43,7 @@ final class Plugin
 
     private function define_constants()
     {
-        define('EVEF_VERSION', '1.2.1');
+        define('EVEF_VERSION', '1.2.2');
         define('EVEF_PLUGIN_DIR', plugin_dir_path(__FILE__));
         define('EVEF_PLUGIN_URL', plugin_dir_url(__FILE__));
     }
