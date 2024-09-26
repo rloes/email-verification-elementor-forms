@@ -9,7 +9,7 @@ class Rate_Limiter
     private const IP_TIMEOUT_PREFIX = 'evef_verification_timeout_ip_';
     private const EMAIL_TIMEOUT_PREFIX = 'evef_verification_timeout_email_';
 
-    private const BASE_TIMEOUT = 30; // 30 seconds
+    private const BASE_TIMEOUT = 10; // seconds
     private const GROWTH_FACTOR = 1.25;
 
     public static function check_rate_limit($email)
@@ -91,6 +91,9 @@ class Rate_Limiter
         $timeout = self::BASE_TIMEOUT * pow(self::GROWTH_FACTOR, $attempts);
         $rounded_timeout = (int) floor($timeout / 5) * 5;
         set_transient($timeout_key, true, $rounded_timeout);
+        if($rounded_timeout > 360) {
+            error_log("Timeout of $timeout seconds given to $attempt_prefix:");
+        }
         return $rounded_timeout;
     }
 

@@ -3,7 +3,7 @@ Contributors: rloes
 Tags: email verification, elementor, forms, spam prevention
 Requires at least: 5.0
 Tested up to: 6.6
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,9 +31,14 @@ Yes, the plugin provides filters to customize the text and appearance of the ema
 
 == Screenshots ==
 
-1. **Email Verification Field** - The email verification field as it appears in the form.
-
 == Changelog ==
+
+= 1.2.0 =
++ Add Plugin URI
+* Add rate limiting for email and ip
+* respect rate limit timeout in frontend
+* improve error handling
+
 
 = 1.1.2 =
 * Add Author URI

@@ -43,7 +43,7 @@ final class Plugin
 
     private function define_constants()
     {
-        define('EVEF_VERSION', '1.1.2');
+        define('EVEF_VERSION', '1.2.0');
         define('EVEF_PLUGIN_DIR', plugin_dir_path(__FILE__));
         define('EVEF_PLUGIN_URL', plugin_dir_url(__FILE__));
     }
